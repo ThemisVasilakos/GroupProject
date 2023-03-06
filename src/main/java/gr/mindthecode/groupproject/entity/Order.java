@@ -1,8 +1,6 @@
 package gr.mindthecode.groupproject.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -15,7 +13,7 @@ public class Order {
     private String productCode;
     private Double finalDiscount;
 
-    @OneToMany(mappedBy="order")
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Product> products;
 
 
