@@ -1,10 +1,10 @@
 package gr.mindthecode.groupproject.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity
+import java.util.List;
+
+@Entity(name="Product")
 public class Product {
 
     @Id
@@ -14,6 +14,13 @@ public class Product {
     private String description;
 
     private Double price;
+
+    @ManyToMany
+    @JoinTable(
+            name = "course_like",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "order_id"))
+    private List<Orders> orders;
 
     public Integer getProductId() {
         return productId;
@@ -37,5 +44,13 @@ public class Product {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public List<Orders> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Orders> orders) {
+        this.orders = orders;
     }
 }
