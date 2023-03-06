@@ -7,6 +7,7 @@ import java.util.List;
 @Entity
 public class Orders {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
     private Integer quantity;
