@@ -15,7 +15,7 @@ public class Product {
 
     private Double price;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "course_like",
             joinColumns = @JoinColumn(name = "product_id"),

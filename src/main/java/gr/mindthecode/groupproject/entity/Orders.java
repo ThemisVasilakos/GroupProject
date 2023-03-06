@@ -14,7 +14,7 @@ public class Orders {
     private String productCode;
     private Double finalDiscount;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
             name = "orders_product",
             joinColumns = @JoinColumn(name = "order_id"),
