@@ -7,9 +7,9 @@ import gr.mindthecode.groupproject.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
 public class ShopController {
@@ -56,6 +56,28 @@ public class ShopController {
                 .orElseThrow();
         orderRepository.delete(match);
     }
+    @PutMapping("/products/{id}")
+    public Product update(@PathVariable String description, @RequestBody Product product) {
+        if (!description.equals(product.getDescription())){
+            throw new HttpClientErrorException(HttpStatusCode.valueOf(400), "id in path does not patch id in body");
+        }
+        return productRepository.save(product);
+    }
+    @PutMapping("/products/{id}")
+    public Product update(@PathVariable Double price, @RequestBody Product product) {
+        if (!price.equals(product.getPrice())){
+            throw new HttpClientErrorException(HttpStatusCode.valueOf(400), "id in path does not patch id in body");
+        }
+        return productRepository.save(product);
+    }
+    @PutMapping("/order/{id}")
+    public Orders update(@PathVariable Integer id, @RequestBody Orders order) {
+        if (!id.equals(order.getOrderId()) ){
+            throw new HttpClientErrorException(HttpStatusCode.valueOf(400), "id in path does not patch id in body");
+        }
+        return orderRepository.save(order);
+    }
+
     @GetMapping("/products")
     public Page<Product> allProducts(
             @RequestParam(required = false) String description,
