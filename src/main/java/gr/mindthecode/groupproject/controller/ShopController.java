@@ -57,19 +57,13 @@ public class ShopController {
         orderRepository.delete(match);
     }
     @PutMapping("/products/{id}")
-    public Product update(@PathVariable String description, @RequestBody Product product) {
-        if (!description.equals(product.getDescription())){
+    public Product update(@PathVariable Integer id, @RequestBody Product product) {
+        if (!id.equals(product.getProductId())){
             throw new HttpClientErrorException(HttpStatusCode.valueOf(400), "id in path does not patch id in body");
         }
         return productRepository.save(product);
     }
-    @PutMapping("/products/{id}")
-    public Product update(@PathVariable Double price, @RequestBody Product product) {
-        if (!price.equals(product.getPrice())){
-            throw new HttpClientErrorException(HttpStatusCode.valueOf(400), "id in path does not patch id in body");
-        }
-        return productRepository.save(product);
-    }
+
     @PutMapping("/order/{id}")
     public Orders update(@PathVariable Integer id, @RequestBody Orders order) {
         if (!id.equals(order.getOrderId()) ){
