@@ -1,1 +1,4 @@
 # GroupProject
+
+## Endpoints:
+### "/products" 
