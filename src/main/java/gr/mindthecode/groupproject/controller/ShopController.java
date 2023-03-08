@@ -57,10 +57,9 @@ public class ShopController {
         orderRepository.delete(match);
     }
     @GetMapping("/products")
-    public Page<Product> all(
-            @RequestParam("description") Optional<String> description,
-            @RequestParam("productId") Optional<Integer> productId,
-            @RequestParam("price") Optional<Double> price,
+    public Page<Product> allProducts(
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) Double price,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
             @RequestParam(defaultValue = "ASC", required = false) String sort
@@ -72,20 +71,20 @@ public class ShopController {
                     Sort.by("description").descending());
 
     Page<Product> res;
-        if (description.isEmpty()) {
-        res = productRepository.findAll(paging);
-    } else {
-        res = productRepository.findByDescriptionContainingIgnoreCase(description,paging);
+        if (description==null && price == null) {
+            res = productRepository.findAll(paging);
+        } else {
+        res = productRepository.findByDescriptionContainingIgnoreCaseOrPrice(description,price,paging);
     }
 
         return res;
 }
+
     @GetMapping("/order")
-    public Page<Orders> all(
-            @RequestParam("orderId") Optional<Integer> orderId,
-            @RequestParam("quantity") Optional<Integer> quantity,
-            @RequestParam("productCode") Optional<String> productCode,
-            @RequestParam("finalDiscount") Optional<Double> finalDiscount,
+    public Page<Orders> allOrders(
+            @RequestParam(required = false) Integer quantity,
+            @RequestParam(required = false) String productCode,
+            @RequestParam(required = false) Double finalDiscount,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
             @RequestParam(defaultValue = "ASC", required = false) String sort
@@ -97,10 +96,11 @@ public class ShopController {
                         Sort.by("orderId").descending());
 
         Page<Orders> res;
-        if (orderId.isEmpty()) {
+        if (quantity == null && productCode == null && finalDiscount == null) {
             res = orderRepository.findAll(paging);
         } else {
-            res = orderRepository.findByOrderContainingIgnoreCase(orderId, paging);
+            res = orderRepository.findByProductCodeContainingIgnoreCaseOrQuantityOrFinalDiscount(productCode, quantity,
+                    finalDiscount ,paging);
         }
 
         return res;

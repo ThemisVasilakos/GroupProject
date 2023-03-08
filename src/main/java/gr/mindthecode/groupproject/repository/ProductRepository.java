@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
-    Page<Product> findByDescriptionContainingIgnoreCase(Optional<String> description,
+    Page<Product> findByDescriptionContainingIgnoreCaseOrPrice(String description,Double price,
                                                         PageRequest pageable);
 }
