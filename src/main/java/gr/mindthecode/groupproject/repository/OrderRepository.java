@@ -9,7 +9,5 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Orders,Integer> {
 
-    Page<Orders> findByProductCodeContainingIgnoreCaseOrQuantityOrFinalDiscount(String productCode,Integer quantity,
-                                                                                Double finalDiscount,
-                                                                                PageRequest pageable);
+    Page<Orders> findByProductCodeFinalDiscount( Double finalDiscount,PageRequest pageable);
 }

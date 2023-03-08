@@ -1,6 +1,7 @@
 package gr.mindthecode.groupproject.controller;
 
 import gr.mindthecode.groupproject.entity.Orders;
+import gr.mindthecode.groupproject.repository.OrderListRepository;
 import gr.mindthecode.groupproject.repository.OrderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,18 +10,22 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+
 import java.util.Optional;
 
 @RestController
 public class OrdersController {
     private final OrderRepository orderRepository;
+    private final OrderListRepository orderListRepository;
 
-    public OrdersController(OrderRepository orderRepository) {
+    public OrdersController(OrderRepository orderRepository, OrderListRepository orderListRepository) {
         this.orderRepository=orderRepository;
+        this.orderListRepository = orderListRepository;
     }
 
     @PostMapping("/order")
     public Orders newOrder(@RequestBody Orders order) {
+
         return orderRepository.save(order);
     }
 
@@ -44,8 +49,6 @@ public class OrdersController {
         if(searchOrder.isEmpty()){
             throw new HttpClientErrorException(HttpStatusCode.valueOf(400),"Not found");
         }
-        searchOrder.get().setQuantity(order.getQuantity());
-        searchOrder.get().setProductCode(order.getProductCode());
         searchOrder.get().setFinalDiscount(order.getFinalDiscount());
         searchOrder.get().setProducts(order.getProducts());
 
@@ -54,8 +57,6 @@ public class OrdersController {
 
     @GetMapping("/order")
     public Page<Orders> allOrders(
-            @RequestParam(required = false) Integer quantity,
-            @RequestParam(required = false) String productCode,
             @RequestParam(required = false) Double finalDiscount,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "3") int size,
@@ -68,11 +69,10 @@ public class OrdersController {
                         Sort.by("orderId").descending());
 
         Page<Orders> res;
-        if (quantity == null && productCode == null && finalDiscount == null) {
+        if (finalDiscount == null) {
             res = orderRepository.findAll(paging);
         } else {
-            res = orderRepository.findByProductCodeContainingIgnoreCaseOrQuantityOrFinalDiscount(productCode, quantity,
-                    finalDiscount ,paging);
+            res = orderRepository.findByProductCodeFinalDiscount(finalDiscount ,paging);
         }
 
         return res;

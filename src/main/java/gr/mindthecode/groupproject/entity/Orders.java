@@ -10,8 +10,6 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
-    private Integer quantity;
-    private String productCode;
     private Double finalDiscount;
 
     @ManyToMany(cascade = {CascadeType.ALL})
@@ -21,28 +19,24 @@ public class Orders {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
 
+    @OneToMany
+    @JoinTable(name = "orderListId")
+    private List<OrderList> orderLists;
+
+    public List<OrderList> getOrderLists() {
+        return orderLists;
+    }
+
+    public void setOrderLists(List<OrderList> orderLists) {
+        this.orderLists = orderLists;
+    }
+
     public Integer getOrderId() {
         return orderId;
     }
 
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
     }
 
     public Double getFinalDiscount() {

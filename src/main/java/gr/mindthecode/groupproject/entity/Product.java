@@ -17,10 +17,22 @@ public class Product {
 
     @ManyToMany(cascade = {CascadeType.ALL})
     @JoinTable(
-            name = "course_like",
+            name = "orders_product",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id"))
     private List<Orders> orders;
+
+    @OneToMany
+    @JoinTable(name = "orderListId")
+    private List<OrderList> orderLists;
+
+    public List<OrderList> getOrderLists() {
+        return orderLists;
+    }
+
+    public void setOrderLists(List<OrderList> orderLists) {
+        this.orderLists = orderLists;
+    }
 
     public Integer getProductId() {
         return productId;
