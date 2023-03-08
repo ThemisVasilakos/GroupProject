@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Optional;
+
 @RestController
 public class ShopController {
     private final ProductRepository productRepository;
@@ -58,18 +60,30 @@ public class ShopController {
     }
     @PutMapping("/products/{id}")
     public Product update(@PathVariable Integer id, @RequestBody Product product) {
-        if (!id.equals(product.getProductId())){
-            throw new HttpClientErrorException(HttpStatusCode.valueOf(400), "id in path does not patch id in body");
+        Optional<Product> searchProduct = productRepository.findById(id);
+
+        if(searchProduct.isEmpty()){
+            throw new HttpClientErrorException(HttpStatusCode.valueOf(400),"Not found");
         }
-        return productRepository.save(product);
+        searchProduct.get().setDescription(product.getDescription());
+        searchProduct.get().setPrice(product.getPrice());
+
+        return productRepository.save(searchProduct.get());
     }
 
     @PutMapping("/order/{id}")
     public Orders update(@PathVariable Integer id, @RequestBody Orders order) {
-        if (!id.equals(order.getOrderId()) ){
-            throw new HttpClientErrorException(HttpStatusCode.valueOf(400), "id in path does not patch id in body");
+        Optional<Orders> searchOrder = orderRepository.findById(id);
+
+        if(searchOrder.isEmpty()){
+            throw new HttpClientErrorException(HttpStatusCode.valueOf(400),"Not found");
         }
-        return orderRepository.save(order);
+        searchOrder.get().setQuantity(order.getQuantity());
+        searchOrder.get().setProductCode(order.getProductCode());
+        searchOrder.get().setFinalDiscount(order.getFinalDiscount());
+        searchOrder.get().setProducts(order.getProducts());
+
+        return orderRepository.save(searchOrder.get());
     }
 
     @GetMapping("/products")
